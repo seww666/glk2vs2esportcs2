@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Турнір 2 на 2 GLK</title>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    
     <style>
-        /* Базові стилі та обнулення */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -22,7 +24,6 @@
             min-height: 100vh;
         }
 
-        /* Верхня панель (Хедер) */
         header {
             width: 100%;
             background-color: #e5e9f0;
@@ -51,7 +52,6 @@
             background-color: #81a1c1;
         }
 
-        /* Головний контейнер (як на твоєму макеті) */
         .main-container {
             flex: 1;
             display: flex;
@@ -63,7 +63,6 @@
             padding: 20px;
         }
 
-        /* Зона для фото */
         .photo-placeholder {
             width: 100%;
             max-width: 700px;
@@ -95,7 +94,7 @@
             border-radius: 20px;
             cursor: pointer;
             font-size: 1rem;
-            display: none; /* Показується тільки адміну */
+            display: none;
         }
 
         .photo-placeholder:hover .upload-btn {
@@ -106,7 +105,6 @@
             display: none;
         }
 
-        /* Кнопка "Подати заявку" */
         .submit-app-btn {
             background-color: #d8dee9;
             color: #2e3440;
@@ -124,7 +122,6 @@
             background-color: #e5e9f0;
         }
 
-        /* Модальні вікна */
         .modal {
             display: none;
             position: fixed;
@@ -162,7 +159,6 @@
             color: #d8dee9;
         }
 
-        /* Форми в модалках */
         input[type="text"], input[type="password"] {
             width: 100%;
             padding: 10px;
@@ -184,7 +180,6 @@
             cursor: pointer;
         }
 
-        /* Панель керування заявками для Адміна */
         .admin-section {
             display: none;
             width: 100%;
@@ -219,11 +214,6 @@
             gap: 5px;
         }
 
-        .player-label {
-            font-size: 0.9rem;
-            color: #d8dee9;
-        }
-
         .app-actions button {
             padding: 6px 12px;
             margin-left: 5px;
@@ -247,36 +237,27 @@
 </head>
 <body>
 
-    <!-- Шапка сайту -->
     <header>
         <div id="site-title">2/2 GLK HLTV VALVE</div>
         <button class="admin-panel-btn" id="auth-action-btn" onclick="openLoginModal()">Вхід для Адміна</button>
     </header>
 
-    <!-- Головне меню -->
     <div class="main-container">
-        
-        <!-- Зона банера/фото -->
         <div class="photo-placeholder" id="banner-zone">
-            <span id="placeholder-text">Вставте фото</span>
+            <span id="placeholder-text">Завантаження фото...</span>
             <img id="banner-img" src="" alt="" style="display: none;">
             <label for="file-input" class="upload-btn" id="upload-label">Змінити фото</label>
             <input type="file" id="file-input" accept="image/*" onchange="uploadPhoto(event)">
         </div>
 
-        <!-- Кнопка подачі заявки -->
         <button class="submit-app-btn" onclick="openAppModal()">Подати заявку</button>
 
-        <!-- Адмін-панель із заявками -->
         <div class="admin-section" id="admin-panel">
             <h2>Список заявок (Адмін-панель)</h2>
-            <div id="applications-container">
-                <!-- Заявки з'являтимуться тут через JS -->
-            </div>
+            <div id="applications-container"></div>
         </div>
     </div>
 
-    <!-- Модальне вікно: Логін Адміна -->
     <div class="modal" id="login-modal">
         <div class="modal-content">
             <span class="close-btn" onclick="closeModal('login-modal')">&times;</span>
@@ -287,7 +268,6 @@
         </div>
     </div>
 
-    <!-- Модальне вікно: Подача заявки (Оновлене для 2 гравців) -->
     <div class="modal" id="app-modal">
         <div class="modal-content">
             <span class="close-btn" onclick="closeModal('app-modal')">&times;</span>
@@ -300,14 +280,28 @@
     </div>
 
     <script>
-        // Ініціалізація сховища даних
-        if (!localStorage.getItem('applications')) localStorage.setItem('applications', JSON.stringify([]));
+        // !!! ЗАМІНИ ЦІ ДАНІ НА СВОЇ З FIREBASE !!!
+        const firebaseConfig = {
+            apiKey: "ТВІЙ_API_KEY",
+            authDomain: "ТВІЙ_AUTH_DOMAIN",
+            databaseURL: "ТВІЙ_DATABASE_URL",
+            projectId: "ТВІЙ_PROJECT_ID",
+            storageBucket: "ТВІЙ_STORAGE_BUCKET",
+            messagingSenderId: "ТВІЙ_MESSAGING_SENDER_ID",
+            appId: "ТВІЙ_APP_ID"
+        };
+        
+        // Ініціалізація баз даних
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // Стан адміна залишаємо локальним (щоб звичайні люди не бачили адмінку)
         let isAdmin = localStorage.getItem('isAdmin') === 'true';
 
         window.onload = function() {
             checkAdminStatus();
-            loadPhoto();
-            renderApplications();
+            listenToBannerPhoto();
+            listenToApplications();
         };
 
         function openLoginModal() { document.getElementById('login-modal').style.display = 'flex'; }
@@ -341,7 +335,6 @@
                 localStorage.setItem('isAdmin', 'true');
                 closeModal('login-modal');
                 checkAdminStatus();
-                renderApplications();
             } else {
                 alert("Неправильний логін або пароль!");
             }
@@ -353,6 +346,7 @@
             checkAdminStatus();
         }
 
+        // Оновлення фото ДЛЯ ВСІХ через сервер
         function uploadPhoto(event) {
             if (!isAdmin) return;
             const file = event.target.files[0];
@@ -360,18 +354,30 @@
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     const base64Image = e.target.result;
-                    localStorage.setItem('bannerPhoto', base64Image);
-                    displayPhoto(base64Image);
+                    // Записуємо фото в глобальну базу
+                    database.ref('bannerPhoto').set(base64Image);
                 };
                 reader.readAsDataURL(file);
             }
         }
 
-        function loadPhoto() {
-            const savedPhoto = localStorage.getItem('bannerPhoto');
-            if (savedPhoto) {
-                displayPhoto(savedPhoto);
-            }
+        // Слухаємо базу даних: якщо фото зміниться на сервері — воно миттєво зміниться у всіх користувачів
+        function listenToBannerPhoto() {
+            database.ref('bannerPhoto').on('value', (snapshot) => {
+                const src = snapshot.val();
+                const img = document.getElementById('banner-img');
+                const placeholderText = document.getElementById('placeholder-text');
+                
+                if (src) {
+                    img.src = src;
+                    img.style.display = 'block';
+                    placeholderText.style.display = 'none';
+                } else {
+                    img.style.display = 'none';
+                    placeholderText.innerText = "Вставте фото";
+                    placeholderText.style.display = 'block';
+                }
+            });
         }
 
         document.getElementById('banner-zone').addEventListener('click', function(e) {
@@ -380,15 +386,7 @@
             }
         });
 
-        function displayPhoto(src) {
-            const img = document.getElementById('banner-img');
-            const placeholderText = document.getElementById('placeholder-text');
-            img.src = src;
-            img.style.display = 'block';
-            placeholderText.style.display = 'none';
-        }
-
-        // Оновлена функція збору даних про команду
+        // Надсилання команди в глобальну базу даних
         function submitApplication() {
             const p1 = document.getElementById('player1-nickname').value.trim();
             const p2 = document.getElementById('player2-nickname').value.trim();
@@ -398,72 +396,69 @@
                 return;
             }
 
-            const apps = JSON.parse(localStorage.getItem('applications'));
-            const newApp = {
-                id: Date.now(),
+            const newAppRef = database.ref('applications').push();
+            newAppRef.set({
+                id: newAppRef.key,
                 player1: p1,
                 player2: p2,
                 status: 'pending'
-            };
-
-            apps.push(newApp);
-            localStorage.setItem('applications', JSON.stringify(apps));
+            });
             
             document.getElementById('player1-nickname').value = '';
             document.getElementById('player2-nickname').value = '';
             closeModal('app-modal');
-            alert("Заявку команди успішно надіслано!");
-            
-            if (isAdmin) renderApplications();
+            alert("Заявку команди успішно надіслано на сервер!");
         }
 
-        // Відображення заявок з двома нікнеймами
-        function renderApplications() {
-            const container = document.getElementById('applications-container');
-            container.innerHTML = '';
-            const apps = JSON.parse(localStorage.getItem('applications')) || [];
+        // Слухаємо заявки онлайн (синхронізація для адміна)
+        function listenToApplications() {
+            database.ref('applications').on('value', (snapshot) => {
+                const container = document.getElementById('applications-container');
+                container.innerHTML = '';
+                const data = snapshot.val();
 
-            if (apps.length === 0) {
-                container.innerHTML = '<p style="color: #64748b;">Заявок поки немає.</p>';
-                return;
-            }
-
-            apps.forEach(app => {
-                const item = document.createElement('div');
-                item.className = 'application-item';
-
-                let actionContent = '';
-                if (app.status === 'pending') {
-                    actionContent = `
-                        <div class="app-actions">
-                            <button class="accept-btn" onclick="changeStatus(${app.id}, 'accepted')">Прийняти</button>
-                            <button class="reject-btn" onclick="changeStatus(${app.id}, 'rejected')">Відхилити</button>
-                        </div>
-                    `;
-                } else if (app.status === 'accepted') {
-                    actionContent = `<span class="status-badge status-accepted">Прийнято ✅</span>`;
-                } else {
-                    actionContent = `<span class="status-badge status-rejected">Відхилено ❌</span>`;
+                if (!data) {
+                    container.innerHTML = '<p style="color: #64748b;">Заявок поки немає.</p>';
+                    return;
                 }
 
-                item.innerHTML = `
-                    <div class="team-info">
-                        <div>👤 Гравці: <strong>${app.player1}</strong> & <strong>${app.player2}</strong></div>
-                    </div>
-                    ${actionContent}
-                `;
-                container.appendChild(item);
+                // Перетворюємо об'єкт бази в масив
+                const apps = Object.values(data);
+
+                apps.forEach(app => {
+                    const item = document.createElement('div');
+                    item.className = 'application-item';
+
+                    let actionContent = '';
+                    if (app.status === 'pending') {
+                        actionContent = `
+                            <div class="app-actions">
+                                <button class="accept-btn" onclick="changeStatus('${app.id}', 'accepted')">Прийняти</button>
+                                <button class="reject-btn" onclick="changeStatus('${app.id}', 'rejected')">Відхилити</button>
+                            </div>
+                        `;
+                    } else if (app.status === 'accepted') {
+                        actionContent = `<span class="status-badge status-accepted">Прийнято ✅</span>`;
+                    } else {
+                        actionContent = `<span class="status-badge status-rejected">Відхилено ❌</span>`;
+                    }
+
+                    item.innerHTML = `
+                        <div class="team-info">
+                            <div>👤 Гравці: <strong>${app.player1}</strong> & <strong>${app.player2}</strong></div>
+                        </div>
+                        ${actionContent}
+                    `;
+                    container.appendChild(item);
+                });
             });
         }
 
+        // Зміна статусу в базі даних (адмін приймає рішення)
         function changeStatus(id, newStatus) {
-            let apps = JSON.parse(localStorage.getItem('applications'));
-            apps = apps.map(app => {
-                if (app.id === id) app.status = newStatus;
-                return app;
+            database.ref('applications/' + id).update({
+                status: newStatus
             });
-            localStorage.setItem('applications', JSON.stringify(apps));
-            renderApplications();
         }
     </script>
 </body>
