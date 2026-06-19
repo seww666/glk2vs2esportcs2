@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Турнір 2 на 2 GLK</title>
+    <style>
+        /* Базові стилі та обнулення */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #3b4252;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* Верхня панель (Хедер) */
+        header {
+            width: 100%;
+            background-color: #e5e9f0;
+            color: #2e3440;
+            padding: 15px 20px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .admin-panel-btn {
+            background-color: #88c0d0;
+            color: #2e3440;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+
+        .admin-panel-btn:hover {
+            background-color: #81a1c1;
+        }
+
+        /* Головний контейнер (як на твоєму макеті) */
+        .main-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            max-width: 900px;
+            padding: 20px;
+        }
+
+        /* Зона для фото */
+        .photo-placeholder {
+            width: 100%;
+            max-width: 700px;
+            height: 400px;
+            background-color: #d8dee9;
+            color: #2e3440;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            border-radius: 4px;
+            margin-bottom: 40px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .photo-placeholder img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .upload-btn {
+            position: absolute;
+            background: rgba(0,0,0,0.7);
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 1rem;
+            display: none; /* Показується тільки адміну */
+        }
+
+        .photo-placeholder:hover .upload-btn {
+            display: block;
+        }
+
+        #file-input {
+            display: none;
+        }
+
+        /* Кнопка "Подати заявку" */
+        .submit-app-btn {
+            background-color: #d8dee9;
+            color: #2e3440;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: background 0.2s;
+        }
+
+        .submit-app-btn:hover {
+            background-color: #e5e9f0;
+        }
+
+        /* Модальні вікна */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .modal-content {
+            background-color: #2e3440;
+            padding: 30px;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 400px;
+            position: relative;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        }
+
+        .modal-content h3 {
+            margin-bottom: 20px;
+            color: #88c0d0;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #d8dee9;
+        }
+
+        /* Форми в модалках */
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #4c566a;
+            background-color: #3b4252;
+            color: #fff;
+            border-radius: 4px;
+        }
+
+        .form-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: #a3be8c;
+            color: #2e3440;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* Панель керування заявками для Адміна */
+        .admin-section {
+            display: none;
+            width: 100%;
+            max-width: 700px;
+            background-color: #2e3440;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .admin-section h2 {
+            color: #81a1c1;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #4c566a;
+            padding-bottom: 10px;
+        }
+
+        .application-item {
+            background-color: #3b4252;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .team-info {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .player-label {
+            font-size: 0.9rem;
+            color: #d8dee9;
+        }
+
+        .app-actions button {
+            padding: 6px 12px;
+            margin-left: 5px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .accept-btn { background-color: #a3be8c; color: #2e3440; }
+        .reject-btn { background-color: #bf616a; color: #fff; }
+        
+        .status-badge {
+            font-weight: bold;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+        .status-accepted { color: #a3be8c; }
+        .status-rejected { color: #bf616a; }
+    </style>
+</head>
+<body>
+
+    <!-- Шапка сайту -->
+    <header>
+        <div id="site-title">2/2 GLK HLTV VALVE</div>
+        <button class="admin-panel-btn" id="auth-action-btn" onclick="openLoginModal()">Вхід для Адміна</button>
+    </header>
+
+    <!-- Головне меню -->
+    <div class="main-container">
+        
+        <!-- Зона банера/фото -->
+        <div class="photo-placeholder" id="banner-zone">
+            <span id="placeholder-text">Вставте фото</span>
+            <img id="banner-img" src="" alt="" style="display: none;">
+            <label for="file-input" class="upload-btn" id="upload-label">Змінити фото</label>
+            <input type="file" id="file-input" accept="image/*" onchange="uploadPhoto(event)">
+        </div>
+
+        <!-- Кнопка подачі заявки -->
+        <button class="submit-app-btn" onclick="openAppModal()">Подати заявку</button>
+
+        <!-- Адмін-панель із заявками -->
+        <div class="admin-section" id="admin-panel">
+            <h2>Список заявок (Адмін-панель)</h2>
+            <div id="applications-container">
+                <!-- Заявки з'являтимуться тут через JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальне вікно: Логін Адміна -->
+    <div class="modal" id="login-modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('login-modal')">&times;</span>
+            <h3>Авторизація</h3>
+            <input type="text" id="admin-login" placeholder="Логін">
+            <input type="password" id="admin-pass" placeholder="Пароль">
+            <button class="form-btn" onclick="loginAdmin()">Увійти</button>
+        </div>
+    </div>
+
+    <!-- Модальне вікно: Подача заявки (Оновлене для 2 гравців) -->
+    <div class="modal" id="app-modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('app-modal')">&times;</span>
+            <h3>Подати заявку на турнір</h3>
+            <p style="margin-bottom: 10px; font-size: 0.9rem; color: #88c0d0;">Заповніть нікнейми обох учасників:</p>
+            <input type="text" id="player1-nickname" placeholder="Ваш нікнейм">
+            <input type="text" id="player2-nickname" placeholder="Нікнейм тімейта">
+            <button class="form-btn" onclick="submitApplication()">Надіслати команду</button>
+        </div>
+    </div>
+
+    <script>
+        // Ініціалізація сховища даних
+        if (!localStorage.getItem('applications')) localStorage.setItem('applications', JSON.stringify([]));
+        let isAdmin = localStorage.getItem('isAdmin') === 'true';
+
+        window.onload = function() {
+            checkAdminStatus();
+            loadPhoto();
+            renderApplications();
+        };
+
+        function openLoginModal() { document.getElementById('login-modal').style.display = 'flex'; }
+        function openAppModal() { document.getElementById('app-modal').style.display = 'flex'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+        function checkAdminStatus() {
+            const authBtn = document.getElementById('auth-action-btn');
+            const adminPanel = document.getElementById('admin-panel');
+            const uploadLabel = document.getElementById('upload-label');
+
+            if (isAdmin) {
+                authBtn.innerText = "Вийти (Адмін)";
+                authBtn.onclick = logoutAdmin;
+                adminPanel.style.display = "block";
+                uploadLabel.style.display = "block";
+            } else {
+                authBtn.innerText = "Вхід для Адміна";
+                authBtn.onclick = openLoginModal;
+                adminPanel.style.display = "none";
+                uploadLabel.style.display = "none";
+            }
+        }
+
+        function loginAdmin() {
+            const login = document.getElementById('admin-login').value;
+            const pass = document.getElementById('admin-pass').value;
+
+            if (login === "123" && pass === "admin123") {
+                isAdmin = true;
+                localStorage.setItem('isAdmin', 'true');
+                closeModal('login-modal');
+                checkAdminStatus();
+                renderApplications();
+            } else {
+                alert("Неправильний логін або пароль!");
+            }
+        }
+
+        function logoutAdmin() {
+            isAdmin = false;
+            localStorage.setItem('isAdmin', 'false');
+            checkAdminStatus();
+        }
+
+        function uploadPhoto(event) {
+            if (!isAdmin) return;
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const base64Image = e.target.result;
+                    localStorage.setItem('bannerPhoto', base64Image);
+                    displayPhoto(base64Image);
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function loadPhoto() {
+            const savedPhoto = localStorage.getItem('bannerPhoto');
+            if (savedPhoto) {
+                displayPhoto(savedPhoto);
+            }
+        }
+
+        document.getElementById('banner-zone').addEventListener('click', function(e) {
+            if (isAdmin && e.target.id !== 'file-input' && e.target.id !== 'upload-label') {
+                document.getElementById('file-input').click();
+            }
+        });
+
+        function displayPhoto(src) {
+            const img = document.getElementById('banner-img');
+            const placeholderText = document.getElementById('placeholder-text');
+            img.src = src;
+            img.style.display = 'block';
+            placeholderText.style.display = 'none';
+        }
+
+        // Оновлена функція збору даних про команду
+        function submitApplication() {
+            const p1 = document.getElementById('player1-nickname').value.trim();
+            const p2 = document.getElementById('player2-nickname').value.trim();
+            
+            if (!p1 || !p2) {
+                alert("Будь ласка, введіть нікнейми обох гравців!");
+                return;
+            }
+
+            const apps = JSON.parse(localStorage.getItem('applications'));
+            const newApp = {
+                id: Date.now(),
+                player1: p1,
+                player2: p2,
+                status: 'pending'
+            };
+
+            apps.push(newApp);
+            localStorage.setItem('applications', JSON.stringify(apps));
+            
+            document.getElementById('player1-nickname').value = '';
+            document.getElementById('player2-nickname').value = '';
+            closeModal('app-modal');
+            alert("Заявку команди успішно надіслано!");
+            
+            if (isAdmin) renderApplications();
+        }
+
+        // Відображення заявок з двома нікнеймами
+        function renderApplications() {
+            const container = document.getElementById('applications-container');
+            container.innerHTML = '';
+            const apps = JSON.parse(localStorage.getItem('applications')) || [];
+
+            if (apps.length === 0) {
+                container.innerHTML = '<p style="color: #64748b;">Заявок поки немає.</p>';
+                return;
+            }
+
+            apps.forEach(app => {
+                const item = document.createElement('div');
+                item.className = 'application-item';
+
+                let actionContent = '';
+                if (app.status === 'pending') {
+                    actionContent = `
+                        <div class="app-actions">
+                            <button class="accept-btn" onclick="changeStatus(${app.id}, 'accepted')">Прийняти</button>
+                            <button class="reject-btn" onclick="changeStatus(${app.id}, 'rejected')">Відхилити</button>
+                        </div>
+                    `;
+                } else if (app.status === 'accepted') {
+                    actionContent = `<span class="status-badge status-accepted">Прийнято ✅</span>`;
+                } else {
+                    actionContent = `<span class="status-badge status-rejected">Відхилено ❌</span>`;
+                }
+
+                item.innerHTML = `
+                    <div class="team-info">
+                        <div>👤 Гравці: <strong>${app.player1}</strong> & <strong>${app.player2}</strong></div>
+                    </div>
+                    ${actionContent}
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        function changeStatus(id, newStatus) {
+            let apps = JSON.parse(localStorage.getItem('applications'));
+            apps = apps.map(app => {
+                if (app.id === id) app.status = newStatus;
+                return app;
+            });
+            localStorage.setItem('applications', JSON.stringify(apps));
+            renderApplications();
+        }
+    </script>
+</body>
+</html>
