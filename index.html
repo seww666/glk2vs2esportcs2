@@ -1,872 +1,673 @@
 <!DOCTYPE html>
-<html lang="uk">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Турнір 2на2 GLK HLTV</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+    <title>Blackbox Minecraft Server Orchestrator</title>
     <style>
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            box-sizing: border-box;
         }
-
         body {
-            background: linear-gradient(135deg, #1a1f2e 0%, #16213e 100%);
-            color: #ffffff;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            background: #0b0e14;
+            color: #cdd6e0;
+            font-family: 'Segoe UI', 'Roboto', monospace;
+            padding: 2rem 1.5rem;
             min-height: 100vh;
-        }
-
-        header {
-            width: 100%;
-            background: linear-gradient(90deg, #0f3460 0%, #16213e 100%);
-            color: #00d4ff;
-            padding: 20px;
-            font-size: 1.5rem;
-            font-weight: bold;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 4px 15px rgba(0, 212, 255, 0.3);
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 1.3rem;
-        }
-
-        .admin-panel-btn {
-            background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
-            color: #0f3460;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 25px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s;
-            box-shadow: 0 4px 10px rgba(0, 212, 255, 0.3);
-        }
-
-        .admin-panel-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 212, 255, 0.5);
-        }
-
-        .main-container {
-            flex: 1;
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
-            width: 100%;
-            max-width: 900px;
-            padding: 30px 20px;
         }
-
-        .photo-placeholder {
+        .container {
+            max-width: 1100px;
             width: 100%;
-            max-width: 700px;
-            height: 400px;
-            background: linear-gradient(135deg, #2d4059 0%, #1a1f2e 100%);
-            color: #00d4ff;
+            background: #141a22;
+            border-radius: 28px;
+            padding: 2.5rem 2.2rem;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.7), inset 0 1px 0 #2a333f;
+            border: 1px solid #2a333f;
+        }
+        h1 {
+            font-size: 2.4rem;
+            font-weight: 300;
+            letter-spacing: 1px;
+            color: #f0f4fa;
+            border-bottom: 1px solid #2a333f;
+            padding-bottom: 1.2rem;
+            margin-bottom: 2rem;
             display: flex;
-            justify-content: center;
             align-items: center;
-            font-size: 1.5rem;
-            border-radius: 15px;
-            margin-bottom: 40px;
-            overflow: hidden;
-            position: relative;
-            box-shadow: 0 8px 25px rgba(0, 212, 255, 0.2);
-            border: 2px solid rgba(0, 212, 255, 0.3);
-            transition: all 0.3s;
+            gap: 12px;
         }
-
-        .photo-placeholder:hover {
-            border-color: rgba(0, 212, 255, 0.6);
-            box-shadow: 0 12px 35px rgba(0, 212, 255, 0.3);
+        h1 small {
+            font-size: 0.9rem;
+            color: #7a8a9e;
+            font-weight: 400;
+            margin-left: auto;
+            background: #1e2835;
+            padding: 0.3rem 1rem;
+            border-radius: 40px;
+            border: 1px solid #2f3d4e;
         }
-
-        .photo-placeholder img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+        .grid-2col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
         }
-
-        .upload-btn {
-            position: absolute;
-            background: linear-gradient(135deg, rgba(0, 212, 255, 0.9), rgba(0, 153, 204, 0.9));
-            color: #fff;
-            padding: 12px 25px;
-            border-radius: 25px;
-            cursor: pointer;
-            font-size: 1rem;
-            display: none;
-            border: none;
-            font-weight: bold;
-            transition: all 0.3s;
+        .form-group {
+            margin-bottom: 1.8rem;
         }
-
-        .upload-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 4px 15px rgba(0, 212, 255, 0.5);
-        }
-
-        .photo-placeholder:hover .upload-btn {
+        label {
             display: block;
-        }
-
-        #file-input {
-            display: none;
-        }
-
-        .submit-app-btn {
-            background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
-            color: #0f3460;
-            border: none;
-            padding: 16px 45px;
-            font-size: 1.1rem;
-            border-radius: 25px;
-            cursor: pointer;
+            font-size: 0.85rem;
             font-weight: 600;
-            box-shadow: 0 6px 20px rgba(0, 212, 255, 0.3);
-            transition: all 0.3s;
-            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #8fa2b9;
+            margin-bottom: 0.4rem;
         }
-
-        .submit-app-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 30px rgba(0, 212, 255, 0.5);
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
+        select, input, textarea {
             width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
-            backdrop-filter: blur(3px);
-        }
-
-        .modal-content {
-            background: linear-gradient(135deg, #16213e 0%, #0f3460 100%);
-            padding: 35px;
-            border-radius: 15px;
-            width: 100%;
-            max-width: 450px;
-            position: relative;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7);
-            border: 2px solid rgba(0, 212, 255, 0.2);
-            animation: slideIn 0.3s ease-out;
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .modal-content h3 {
-            margin-bottom: 20px;
-            color: #00d4ff;
-            font-size: 1.4rem;
-        }
-
-        .close-btn {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            font-size: 1.8rem;
-            cursor: pointer;
-            color: #00d4ff;
-            transition: all 0.3s;
-        }
-
-        .close-btn:hover {
-            transform: rotate(90deg);
-            color: #ff6b6b;
-        }
-
-        input[type="text"], input[type="password"] {
-            width: 100%;
-            padding: 12px 15px;
-            margin-bottom: 15px;
-            border: 2px solid rgba(0, 212, 255, 0.3);
-            background-color: rgba(45, 64, 89, 0.5);
-            color: #fff;
-            border-radius: 8px;
-            font-size: 1rem;
-            transition: all 0.3s;
-        }
-
-        input[type="text"]:focus, input[type="password"]:focus {
-            outline: none;
-            border-color: #00d4ff;
-            background-color: rgba(45, 64, 89, 0.8);
-            box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);
-        }
-
-        input[type="text"]::placeholder, input[type="password"]::placeholder {
-            color: rgba(255, 255, 255, 0.5);
-        }
-
-        .form-btn {
-            width: 100%;
-            padding: 13px;
-            background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
-            color: #0f3460;
-            border: none;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: all 0.3s;
-        }
-
-        .form-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 212, 255, 0.4);
-        }
-
-        .admin-section {
-            display: none;
-            width: 100%;
-            max-width: 800px;
-            background: linear-gradient(135deg, #16213e 0%, #0f3460 100%);
-            padding: 25px;
-            border-radius: 15px;
-            margin-top: 20px;
-            box-shadow: 0 8px 25px rgba(0, 212, 255, 0.2);
-            border: 2px solid rgba(0, 212, 255, 0.2);
-        }
-
-        .admin-section h2 {
-            color: #00d4ff;
-            margin-bottom: 20px;
-            border-bottom: 3px solid #00d4ff;
-            padding-bottom: 12px;
-            font-size: 1.3rem;
-        }
-
-        .admin-controls {
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid rgba(0, 212, 255, 0.2);
-        }
-
-        .admin-controls button {
-            background: #ff6b6b;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: bold;
-            margin-right: 10px;
-            transition: all 0.3s;
-        }
-
-        .admin-controls button:hover {
-            background: #ee5a6f;
-            transform: translateY(-2px);
-        }
-
-        .applications-list {
-            max-height: 500px;
-            overflow-y: auto;
-        }
-
-        .applications-list::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        .applications-list::-webkit-scrollbar-track {
-            background: rgba(0, 212, 255, 0.1);
-            border-radius: 10px;
-        }
-
-        .applications-list::-webkit-scrollbar-thumb {
-            background: rgba(0, 212, 255, 0.4);
-            border-radius: 10px;
-        }
-
-        .applications-list::-webkit-scrollbar-thumb:hover {
-            background: rgba(0, 212, 255, 0.6);
-        }
-
-        .application-item {
-            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(0, 153, 204, 0.05));
-            padding: 16px;
-            border-radius: 10px;
-            margin-bottom: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border: 1px solid rgba(0, 212, 255, 0.2);
-            transition: all 0.3s;
-        }
-
-        .application-item:hover {
-            background: linear-gradient(135deg, rgba(0, 212, 255, 0.15), rgba(0, 153, 204, 0.1));
-            border-color: rgba(0, 212, 255, 0.4);
-        }
-
-        .team-info {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            flex: 1;
-        }
-
-        .team-info div {
+            background: #0f151e;
+            border: 1px solid #2a333f;
+            border-radius: 14px;
+            padding: 0.75rem 1rem;
+            color: #e6edf5;
             font-size: 0.95rem;
-            color: #e0e0e0;
+            font-family: inherit;
+            transition: 0.2s;
+            outline: none;
         }
-
-        .player-name {
-            color: #00d4ff;
-            font-weight: bold;
+        select:focus, input:focus, textarea:focus {
+            border-color: #5b7b9e;
+            box-shadow: 0 0 0 3px rgba(60, 130, 210, 0.2);
         }
-
-        .app-actions {
+        select option {
+            background: #141a22;
+        }
+        .inline-group {
             display: flex;
-            gap: 8px;
+            gap: 1rem;
             flex-wrap: wrap;
         }
-
-        .app-actions button {
-            padding: 8px 16px;
-            border: none;
-            border-radius: 6px;
+        .inline-group .form-group {
+            flex: 1;
+            min-width: 120px;
+        }
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 0.3rem;
+        }
+        .checkbox-group label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 400;
+            text-transform: none;
+            font-size: 0.95rem;
+            color: #bcc9db;
             cursor: pointer;
-            font-weight: bold;
-            font-size: 0.9rem;
-            transition: all 0.3s;
         }
-
-        .accept-btn {
-            background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
-            color: #0f3460;
+        .checkbox-group input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #3d7eb3;
         }
-
-        .accept-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 212, 255, 0.4);
+        .btn {
+            background: #1f2b3a;
+            border: none;
+            border-radius: 40px;
+            padding: 0.8rem 2rem;
+            font-weight: 600;
+            font-size: 1rem;
+            color: #eef4fc;
+            cursor: pointer;
+            transition: 0.25s;
+            border: 1px solid #31415a;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
-
-        .reject-btn {
-            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
-            color: #fff;
+        .btn-primary {
+            background: #2b4b70;
+            border-color: #3f6a97;
+            box-shadow: 0 4px 12px rgba(40, 100, 200, 0.2);
         }
-
-        .reject-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4);
+        .btn-primary:hover {
+            background: #35628f;
+            transform: scale(1.02);
+            border-color: #5a8bc2;
         }
-
-        .status-badge {
-            font-weight: bold;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 0.9rem;
+        .btn-success {
+            background: #1d6b4a;
+            border-color: #2b8f62;
         }
-
-        .status-accepted {
-            background: rgba(0, 212, 255, 0.2);
-            color: #00d4ff;
-            border: 1px solid #00d4ff;
+        .btn-success:hover {
+            background: #268a5b;
         }
-
-        .status-rejected {
-            background: rgba(255, 107, 107, 0.2);
-            color: #ff6b6b;
-            border: 1px solid #ff6b6b;
+        .btn-danger {
+            background: #6b2e3a;
+            border-color: #914a5a;
         }
-
-        .empty-state {
-            text-align: center;
-            color: rgba(255, 255, 255, 0.5);
-            padding: 30px;
-            font-size: 1.1rem;
+        .btn-danger:hover {
+            background: #8a3d4d;
         }
-
-        .alert {
-            padding: 12px 16px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            text-align: center;
-            font-weight: 500;
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #252f3d;
         }
-
-        .alert-success {
-            background: rgba(0, 212, 255, 0.2);
-            color: #00d4ff;
-            border: 1px solid #00d4ff;
+        .log-area {
+            margin-top: 2rem;
+            background: #0a0f16;
+            border-radius: 18px;
+            padding: 1.2rem 1.5rem;
+            border: 1px solid #1f2937;
+            max-height: 280px;
+            overflow-y: auto;
+            font-family: 'JetBrains Mono', 'Consolas', monospace;
+            font-size: 0.85rem;
+            line-height: 1.6;
+            color: #b3c7db;
+            white-space: pre-wrap;
+            word-break: break-all;
         }
-
-        .alert-error {
-            background: rgba(255, 107, 107, 0.2);
-            color: #ff6b6b;
-            border: 1px solid #ff6b6b;
+        .log-area .log-entry {
+            border-bottom: 1px solid #18212b;
+            padding: 0.2rem 0;
         }
-
-        @media (max-width: 600px) {
-            header {
-                flex-direction: column;
-                gap: 15px;
-                padding: 15px;
+        .log-area .log-entry .time {
+            color: #5f7a96;
+            margin-right: 1rem;
+        }
+        .badge {
+            background: #1f2b3a;
+            padding: 0.2rem 0.8rem;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #9bb0c9;
+            border: 1px solid #2f4057;
+        }
+        .repo-config {
+            background: #0e141d;
+            border-radius: 16px;
+            padding: 1.2rem;
+            margin-top: 1.2rem;
+            border: 1px solid #1e2939;
+        }
+        .repo-config input {
+            background: #070b10;
+        }
+        .flex-row {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .flex-row .form-group {
+            flex: 2;
+            min-width: 200px;
+        }
+        .flex-row .btn {
+            flex: 0 0 auto;
+        }
+        @media (max-width: 760px) {
+            .grid-2col {
+                grid-template-columns: 1fr;
+                gap: 0.5rem;
             }
-
-            .logo {
-                font-size: 1.1rem;
-            }
-
-            .photo-placeholder {
-                height: 250px;
-                margin-bottom: 30px;
-            }
-
-            .modal-content {
-                width: 90%;
-                padding: 25px;
-            }
-
-            .application-item {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 12px;
-            }
-
-            .app-actions {
-                width: 100%;
-            }
-
-            .app-actions button {
-                flex: 1;
-                min-width: 100px;
+            .container {
+                padding: 1.5rem;
             }
         }
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .status-online { background: #3fcf8e; }
+        .status-offline { background: #cf5a5a; }
+        .status-pending { background: #e6b450; }
     </style>
 </head>
 <body>
+<div class="container" id="app">
+    <h1>
+        ⚡ Blackbox·Mine
+        <small>оркестратор · v3.1</small>
+    </h1>
 
-    <header>
-        <div class="logo">
-            <i class="fas fa-gamepad"></i>
-            <span>2на2 GLK HLTV</span>
-        </div>
-        <button class="admin-panel-btn" id="auth-action-btn" onclick="openLoginModal()">
-            <i class="fas fa-lock"></i> Адмін
-        </button>
-    </header>
-
-    <div class="main-container">
-        <div class="photo-placeholder" id="banner-zone">
-            <span id="placeholder-text">📸 Завантаження фото...</span>
-            <img id="banner-img" src="" alt="Турнір баннер" style="display: none;">
-            <button class="upload-btn" id="upload-label" onclick="triggerFileInput()">
-                <i class="fas fa-camera"></i> Змінити фото
-            </button>
-            <input type="file" id="file-input" accept="image/*" onchange="uploadPhoto(event)">
-        </div>
-
-        <button class="submit-app-btn" onclick="openAppModal()">
-            <i class="fas fa-paper-plane"></i> Подати заявку на турнір
-        </button>
-
-        <div class="admin-section" id="admin-panel">
-            <h2><i class="fas fa-tasks"></i> Панель адміністратора</h2>
-            <div class="admin-controls">
-                <button onclick="clearAllApplications()"><i class="fas fa-trash"></i> Очистити все</button>
-                <button onclick="exportApplications()"><i class="fas fa-download"></i> Експорт в TXT</button>
-                <span style="color: #00d4ff; font-size: 0.9rem;">📊 <span id="apps-count">0</span> заявок</span>
+    <div class="grid-2col">
+        <!-- Левая колонка: версия и тип -->
+        <div>
+            <div class="form-group">
+                <label for="mcVersion">Версия Minecraft</label>
+                <select id="mcVersion">
+                    <option value="1.21">1.21 (последняя)</option>
+                    <option value="1.20.6">1.20.6</option>
+                    <option value="1.20.4">1.20.4</option>
+                    <option value="1.19.4">1.19.4</option>
+                    <option value="1.18.2">1.18.2</option>
+                    <option value="1.17.1">1.17.1</option>
+                    <option value="1.16.5">1.16.5</option>
+                    <option value="1.15.2">1.15.2</option>
+                    <option value="1.14.4">1.14.4</option>
+                    <option value="1.12.2">1.12.2</option>
+                    <option value="1.11.2">1.11.2</option>
+                    <option value="1.10.2">1.10.2</option>
+                    <option value="1.9.4">1.9.4</option>
+                    <option value="1.8.9">1.8.9</option>
+                    <option value="1.7.10">1.7.10</option>
+                </select>
             </div>
-            <div class="applications-list" id="applications-container"></div>
+            <div class="form-group">
+                <label for="serverType">Тип сервера</label>
+                <select id="serverType">
+                    <option value="vanilla">Vanilla (чистый)</option>
+                    <option value="paper">Paper (оптимизированный)</option>
+                    <option value="spigot">Spigot</option>
+                    <option value="forge">Forge (моды)</option>
+                    <option value="fabric">Fabric (моды)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="serverName">Название сервера (slug)</label>
+                <input type="text" id="serverName" value="my-survival-01" placeholder="только латиница, цифры, -">
+            </div>
+        </div>
+
+        <!-- Правая колонка: параметры -->
+        <div>
+            <div class="form-group">
+                <label for="ramAlloc">Выделяемая RAM (МБ)</label>
+                <input type="number" id="ramAlloc" value="2048" min="512" step="256">
+            </div>
+            <div class="inline-group">
+                <div class="form-group">
+                    <label for="serverPort">Порт</label>
+                    <input type="number" id="serverPort" value="25565" min="1024" max="65535">
+                </div>
+                <div class="form-group">
+                    <label for="maxPlayers">Макс. игроков</label>
+                    <input type="number" id="maxPlayers" value="20" min="1" max="500">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="gameMode">Режим игры</label>
+                <select id="gameMode">
+                    <option value="survival">Выживание</option>
+                    <option value="creative">Творческий</option>
+                    <option value="adventure">Приключение</option>
+                    <option value="spectator">Наблюдатель</option>
+                </select>
+            </div>
+            <div class="checkbox-group">
+                <label><input type="checkbox" id="enablePvp" checked> PvP</label>
+                <label><input type="checkbox" id="enableFlight" checked> Полёт</label>
+                <label><input type="checkbox" id="enableCommandBlocks" checked> Командные блоки</label>
+            </div>
         </div>
     </div>
 
-    <!-- МОДАЛЬНЕ ВІКНО ВХОДУ -->
-    <div class="modal" id="login-modal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="closeModal('login-modal')">&times;</span>
-            <h3><i class="fas fa-sign-in-alt"></i> Вхід адміністратора</h3>
-            <div id="login-alert"></div>
-            <input type="text" id="admin-login" placeholder="Логін">
-            <input type="password" id="admin-pass" placeholder="Пароль">
-            <button class="form-btn" onclick="loginAdmin()"><i class="fas fa-check"></i> Увійти</button>
-            <p style="margin-top: 15px; text-align: center; font-size: 0.85rem; color: #888;">
-                За замовчуванням: admin / admin123
-            </p>
+    <!-- GitHub репозиторий -->
+    <div class="repo-config">
+        <div class="flex-row">
+            <div class="form-group">
+                <label for="githubRepo">Репозиторий GitHub (owner/repo)</label>
+                <input type="text" id="githubRepo" value="yourname/mc-servers" placeholder="например: blackbox/minecraft-infra">
+            </div>
+            <div class="form-group">
+                <label for="githubToken">GitHub Token (classic)</label>
+                <input type="password" id="githubToken" placeholder="ghp_... или fine-grained">
+            </div>
+            <div class="form-group">
+                <label for="configBranch">Ветка</label>
+                <input type="text" id="configBranch" value="main">
+            </div>
+        </div>
+        <div style="font-size:0.8rem; color:#6d7f95; margin-top: 6px;">
+            🔐 Токен хранится только в sessionStorage, не передаётся на сторонние серверы.
         </div>
     </div>
 
-    <!-- МОДАЛЬНЕ ВІКНО ЗАЯВКИ -->
-    <div class="modal" id="app-modal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="closeModal('app-modal')">&times;</span>
-            <h3><i class="fas fa-users"></i> Подати заявку на турнір</h3>
-            <div id="app-alert"></div>
-            <p style="margin-bottom: 15px; font-size: 0.95rem; color: #00d4ff;">
-                ⚡ Заповніть нікнейми обох учасників команди:
-            </p>
-            <input type="text" id="player1-nickname" placeholder="Ваш нікнейм (гравець 1)">
-            <input type="text" id="player2-nickname" placeholder="Нікнейм тімейта (гравець 2)">
-            <button class="form-btn" onclick="submitApplication()">
-                <i class="fas fa-arrow-right"></i> Надіслати команду
-            </button>
-        </div>
+    <!-- Действия -->
+    <div class="actions">
+        <button class="btn btn-primary" id="deployBtn">🚀 Развернуть сервер</button>
+        <button class="btn btn-success" id="saveToGitBtn">💾 Сохранить конфиг в GitHub</button>
+        <button class="btn" id="previewBtn">📄 Показать server.properties</button>
+        <button class="btn btn-danger" id="clearLogBtn">🗑️ Очистить лог</button>
+        <span style="margin-left:auto; display:flex; align-items:center; gap:10px;">
+            <span class="status-indicator status-offline" id="statusLight"></span>
+            <span id="statusText" style="color:#8fa2b9;">неактивен</span>
+        </span>
     </div>
 
-    <script>
-        // ===== НАЛАШТУВАННЯ =====
-        const ADMIN_LOGIN = "admin";
-        const ADMIN_PASSWORD = "admin123";
+    <!-- Лог -->
+    <div class="log-area" id="logArea">
+        <div class="log-entry"><span class="time">[system]</span> Инициализация оркестратора Blackbox Research</div>
+        <div class="log-entry"><span class="time">[system]</span> Ожидание команд...</div>
+    </div>
+</div>
 
-        // ===== ГЛОБАЛЬНІ ЗМІННІ =====
-        let isAdmin = localStorage.getItem('isAdmin') === 'true';
-        let applications = JSON.parse(localStorage.getItem('applications')) || [];
-        let bannerPhoto = localStorage.getItem('bannerPhoto') || null;
+<script>
+    (function() {
+        "use strict";
 
-        // ===== ІНІЦІАЛІЗАЦІЯ =====
-        window.onload = function() {
-            checkAdminStatus();
-            displayBannerPhoto();
-            displayApplications();
-        };
+        const logArea = document.getElementById('logArea');
+        const statusLight = document.getElementById('statusLight');
+        const statusText = document.getElementById('statusText');
 
-        // ===== ФУНКЦІЇ МОДАЛЬНИХ ВІКОН =====
-        function openLoginModal() { 
-            document.getElementById('login-modal').style.display = 'flex';
-            setTimeout(() => document.getElementById('admin-login').focus(), 100);
+        // DOM-поля
+        const mcVersion = document.getElementById('mcVersion');
+        const serverType = document.getElementById('serverType');
+        const serverName = document.getElementById('serverName');
+        const ramAlloc = document.getElementById('ramAlloc');
+        const serverPort = document.getElementById('serverPort');
+        const maxPlayers = document.getElementById('maxPlayers');
+        const gameMode = document.getElementById('gameMode');
+        const enablePvp = document.getElementById('enablePvp');
+        const enableFlight = document.getElementById('enableFlight');
+        const enableCommandBlocks = document.getElementById('enableCommandBlocks');
+        const githubRepo = document.getElementById('githubRepo');
+        const githubToken = document.getElementById('githubToken');
+        const configBranch = document.getElementById('configBranch');
+
+        // Кнопки
+        const deployBtn = document.getElementById('deployBtn');
+        const saveToGitBtn = document.getElementById('saveToGitBtn');
+        const previewBtn = document.getElementById('previewBtn');
+        const clearLogBtn = document.getElementById('clearLogBtn');
+
+        // --- Вспомогательные функции ---
+        function getTimestamp() {
+            return new Date().toLocaleTimeString('ru-RU', { hour12: false });
         }
 
-        function openAppModal() { 
-            document.getElementById('app-modal').style.display = 'flex';
-            setTimeout(() => document.getElementById('player1-nickname').focus(), 100);
+        function addLog(message, type = 'info') {
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            const time = getTimestamp();
+            const prefix = type === 'error' ? '❌' : type === 'success' ? '✅' : type === 'warn' ? '⚠️' : 'ℹ️';
+            entry.innerHTML = `<span class="time">[${time}]</span> ${prefix} ${message}`;
+            logArea.appendChild(entry);
+            logArea.scrollTop = logArea.scrollHeight;
         }
 
-        function closeModal(id) { 
-            document.getElementById(id).style.display = 'none';
-            const alertId = id.replace('modal', 'alert');
-            if (document.getElementById(alertId)) {
-                document.getElementById(alertId).innerHTML = '';
-            }
-        }
-
-        // Закриття модалі при кліку на фон
-        window.onclick = function(event) {
-            const loginModal = document.getElementById('login-modal');
-            const appModal = document.getElementById('app-modal');
-            
-            if (event.target == loginModal) loginModal.style.display = 'none';
-            if (event.target == appModal) appModal.style.display = 'none';
-        }
-
-        // ===== ФУНКЦІЇ АДМІНА =====
-        function checkAdminStatus() {
-            const authBtn = document.getElementById('auth-action-btn');
-            const adminPanel = document.getElementById('admin-panel');
-
-            if (isAdmin) {
-                authBtn.innerHTML = '<i class="fas fa-sign-out-alt"></i> Вийти';
-                authBtn.onclick = logoutAdmin;
-                adminPanel.style.display = "block";
+        function setStatus(state, text) {
+            statusLight.className = 'status-indicator';
+            if (state === 'online') {
+                statusLight.classList.add('status-online');
+                statusText.textContent = text || 'онлайн';
+            } else if (state === 'pending') {
+                statusLight.classList.add('status-pending');
+                statusText.textContent = text || 'в процессе...';
             } else {
-                authBtn.innerHTML = '<i class="fas fa-lock"></i> Адмін';
-                authBtn.onclick = openLoginModal;
-                adminPanel.style.display = "none";
+                statusLight.classList.add('status-offline');
+                statusText.textContent = text || 'офлайн';
             }
         }
 
-        function loginAdmin() {
-            const login = document.getElementById('admin-login').value.trim();
-            const pass = document.getElementById('admin-pass').value.trim();
-            const alertDiv = document.getElementById('login-alert');
+        // --- Генерация server.properties ---
+        function generateServerProperties() {
+            const version = mcVersion.value;
+            const type = serverType.value;
+            const name = serverName.value.trim() || 'unnamed-server';
+            const ram = parseInt(ramAlloc.value) || 2048;
+            const port = parseInt(serverPort.value) || 25565;
+            const maxP = parseInt(maxPlayers.value) || 20;
+            const mode = gameMode.value;
+            const pvp = enablePvp.checked ? 'true' : 'false';
+            const flight = enableFlight.checked ? 'true' : 'false';
+            const cmdBlocks = enableCommandBlocks.checked ? 'true' : 'false';
 
-            if (login === ADMIN_LOGIN && pass === ADMIN_PASSWORD) {
-                isAdmin = true;
-                localStorage.setItem('isAdmin', 'true');
-                closeModal('login-modal');
-                checkAdminStatus();
-                showAlert('login-alert', '✅ Ви успішно увійшли!', 'success');
-                setTimeout(() => closeModal('login-modal'), 1000);
-            } else {
-                showAlert('login-alert', '❌ Невірний логін або пароль!', 'error');
-                document.getElementById('admin-pass').value = '';
-            }
-        }
-
-        function logoutAdmin() {
-            isAdmin = false;
-            localStorage.setItem('isAdmin', 'false');
-            checkAdminStatus();
-            alert('Ви вийшли з адміна');
-        }
-
-        // ===== ФУНКЦІЇ ФОТО =====
-        function triggerFileInput() {
-            if (!isAdmin) {
-                alert("Тільки адміністратор може змінювати фото!");
-                return;
-            }
-            document.getElementById('file-input').click();
-        }
-
-        function uploadPhoto(event) {
-            if (!isAdmin) {
-                alert("Тільки адміністратор може змінювати фото!");
-                return;
-            }
-
-            const file = event.target.files[0];
-            if (file) {
-                // Перевірка розміру файлу (макс 5MB для localStorage)
-                if (file.size > 5 * 1024 * 1024) {
-                    alert("Файл занадто великий! Максимум 5MB");
-                    return;
-                }
-
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    bannerPhoto = e.target.result;
-                    localStorage.setItem('bannerPhoto', bannerPhoto);
-                    displayBannerPhoto();
-                    alert('✅ Фото успішно завантажено!');
-                };
-                reader.onerror = function() {
-                    alert("❌ Помилка завантаження файлу!");
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-
-        function displayBannerPhoto() {
-            const img = document.getElementById('banner-img');
-            const placeholderText = document.getElementById('placeholder-text');
-            
-            if (bannerPhoto) {
-                img.src = bannerPhoto;
-                img.style.display = 'block';
-                placeholderText.style.display = 'none';
-            } else {
-                img.style.display = 'none';
-                placeholderText.innerText = "📸 Фото турніру завантажити";
-                placeholderText.style.display = 'block';
-            }
-        }
-
-        // ===== ФУНКЦІЇ ЗАЯВОК =====
-        function submitApplication() {
-            const p1 = document.getElementById('player1-nickname').value.trim();
-            const p2 = document.getElementById('player2-nickname').value.trim();
-
-            if (!p1 || !p2) {
-                showAlert('app-alert', '❌ Будь ласка, введіть нікнейми обох гравців!', 'error');
-                return;
-            }
-
-            if (p1.length < 2 || p2.length < 2) {
-                showAlert('app-alert', '❌ Нікнейм повинен мати мінімум 2 символи!', 'error');
-                return;
-            }
-
-            const newApp = {
-                id: Date.now().toString(),
-                player1: p1,
-                player2: p2,
-                status: 'pending',
-                submittedAt: new Date().toISOString()
+            // Формируем конфиг как объект
+            const props = {
+                '#Minecraft server properties': '',
+                'generated_by': 'Blackbox-Orchestrator v3.1',
+                'version': version,
+                'server_type': type,
+                'server_name': name,
+                'ram_mb': ram,
+                'server_port': port,
+                'max_players': maxP,
+                'gamemode': mode,
+                'pvp': pvp,
+                'allow_flight': flight,
+                'enable_command_block': cmdBlocks,
+                'motd': `§a${name} §6| §b${version} §7| §fBlackbox`,
+                'level_seed': Math.floor(Math.random() * 1000000000),
+                'view_distance': 10,
+                'simulation_distance': 8,
+                'spawn_protection': 16,
+                'max_tick_time': 60000,
+                'network_compression_threshold': 256,
+                'use_native_transport': 'true',
+                'enable_status': 'true',
+                'enable_query': 'false',
+                'enable_rcon': 'false',
+                'rcon_port': 25575,
+                'broadcast_rcon_to_ops': 'true',
+                'sync_chunk_writes': 'true',
+                'prevent_proxy_connections': 'false',
+                'hide_online_players': 'false',
+                'player_idle_timeout': 0,
+                'entity_broadcast_range_percentage': 100,
+                'function_permission_level': 2,
+                'op_permission_level': 4,
+                'level_type': 'default',
+                'generator_settings': '{}',
+                'allow_nether': 'true',
+                'allow_end': 'true',
+                'allow_animals': 'true',
+                'allow_monsters': 'true',
+                'hardcore': 'false',
+                'spawn_animals': 'true',
+                'spawn_monsters': 'true',
+                'spawn_npcs': 'true',
+                'spawn_peaceful_mobs': 'true',
+                'announce_player_achievements': 'true',
+                'enable_autosave': 'true',
+                'force_gamemode': 'false',
+                'max_build_height': 320,
+                'max_world_size': 29999984,
+                'seed': '',
+                'level_name': `world_${name}`,
+                'level_seed': Math.floor(Math.random() * 1000000000)
             };
 
-            applications.push(newApp);
-            localStorage.setItem('applications', JSON.stringify(applications));
-            
-            document.getElementById('player1-nickname').value = '';
-            document.getElementById('player2-nickname').value = '';
-            closeModal('app-modal');
-            
-            showAlert('app-alert', '✅ Заявка успішно надіслана!', 'success');
-            setTimeout(() => {
-                alert("Очікуйте рішення адміна 😊");
-            }, 300);
-            
-            displayApplications();
+            // Сборка в строку
+            let lines = [];
+            for (const [key, val] of Object.entries(props)) {
+                if (key.startsWith('#')) {
+                    lines.push(key);
+                } else {
+                    lines.push(`${key}=${val}`);
+                }
+            }
+            return lines.join('\n');
         }
 
-        function displayApplications() {
-            const container = document.getElementById('applications-container');
-            const countSpan = document.getElementById('apps-count');
-            
-            container.innerHTML = '';
-            countSpan.innerText = applications.length;
+        // --- Сборка полного манифеста ---
+        function buildDeploymentManifest() {
+            const name = serverName.value.trim() || 'server-' + Date.now();
+            const version = mcVersion.value;
+            const type = serverType.value;
+            const ram = parseInt(ramAlloc.value) || 2048;
+            const port = parseInt(serverPort.value) || 25565;
+            const maxP = parseInt(maxPlayers.value) || 20;
+            const mode = gameMode.value;
 
-            if (applications.length === 0) {
-                container.innerHTML = '<div class="empty-state">📭 Заявок поки немає</div>';
-                return;
+            return {
+                serverName: name,
+                minecraftVersion: version,
+                serverType: type,
+                ramMB: ram,
+                port: port,
+                maxPlayers: maxP,
+                gameMode: mode,
+                pvp: enablePvp.checked,
+                allowFlight: enableFlight.checked,
+                commandBlocks: enableCommandBlocks.checked,
+                properties: generateServerProperties(),
+                timestamp: new Date().toISOString(),
+                deployTarget: 'blackbox-orchestrator',
+                repository: githubRepo.value.trim() || 'unknown/repo',
+                branch: configBranch.value.trim() || 'main'
+            };
+        }
+
+        // --- Эмуляция деплоя на удалённый сервер ---
+        function simulateDeploy(manifest) {
+            setStatus('pending', 'деплой...');
+            addLog(`Начат деплой сервера "${manifest.serverName}" (${manifest.minecraftVersion}, ${manifest.serverType})`, 'info');
+
+            return new Promise((resolve) => {
+                const delay = 1800 + Math.random() * 1200;
+                setTimeout(() => {
+                    const success = Math.random() > 0.08; // 92% успеха
+                    if (success) {
+                        const ip = `192.168.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}`;
+                        const assignedPort = manifest.port;
+                        addLog(`✅ Сервер успешно развёрнут на ${ip}:${assignedPort} | RAM: ${manifest.ramMB}МБ`, 'success');
+                        addLog(`📁 Конфиг сохранён в /opt/minecraft/${manifest.serverName}/server.properties`, 'info');
+                        setStatus('online', `активен (${ip})`);
+                        resolve({ success: true, ip, port: assignedPort });
+                    } else {
+                        addLog(`❌ Ошибка деплоя: таймаут соединения с узлом #${Math.floor(Math.random()*5)+1}`, 'error');
+                        setStatus('offline', 'ошибка деплоя');
+                        resolve({ success: false, error: 'deploy_timeout' });
+                    }
+                }, delay);
+            });
+        }
+
+        // --- Сохранение в GitHub через API ---
+        async function saveToGitHub(manifest) {
+            const repo = githubRepo.value.trim();
+            const token = githubToken.value.trim();
+            const branch = configBranch.value.trim() || 'main';
+
+            if (!repo || !token) {
+                addLog('⚠️ Не указан репозиторий или токен GitHub', 'warn');
+                return false;
             }
 
-            // Сортування: спочатку очікують, потім прийняті, потім відхилені
-            const sorted = [...applications].sort((a, b) => {
-                const order = { 'pending': 0, 'accepted': 1, 'rejected': 2 };
-                return order[a.status] - order[b.status];
-            });
+            const path = `servers/${manifest.serverName}/server.properties`;
+            const content = btoa(unescape(encodeURIComponent(manifest.properties))); // Base64
+            const url = `https://api.github.com/repos/${repo}/contents/${path}`;
 
-            sorted.forEach(app => {
-                const item = document.createElement('div');
-                item.className = 'application-item';
+            try {
+                addLog(`⏳ Отправка конфига в ${repo}:${branch} ...`, 'info');
+                // Сначала пробуем получить файл (для получения sha)
+                let sha = null;
+                try {
+                    const getResp = await fetch(url, {
+                        headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github+json' }
+                    });
+                    if (getResp.ok) {
+                        const data = await getResp.json();
+                        sha = data.sha;
+                    }
+                } catch (e) { /* файл не существует */ }
 
-                let actionContent = '';
-                if (app.status === 'pending') {
-                    actionContent = `
-                        <div class="app-actions">
-                            <button class="accept-btn" onclick="changeStatus('${app.id}', 'accepted')">
-                                <i class="fas fa-check"></i> Прийняти
-                            </button>
-                            <button class="reject-btn" onclick="changeStatus('${app.id}', 'rejected')">
-                                <i class="fas fa-times"></i> Відхилити
-                            </button>
-                        </div>
-                    `;
-                } else if (app.status === 'accepted') {
-                    actionContent = `<span class="status-badge status-accepted">
-                        <i class="fas fa-check-circle"></i> Прийнято
-                    </span>`;
-                } else {
-                    actionContent = `<span class="status-badge status-rejected">
-                        <i class="fas fa-times-circle"></i> Відхилено
-                    </span>`;
-                }
+                const payload = {
+                    message: `Обновление конфига для ${manifest.serverName} от ${new Date().toISOString()}`,
+                    content: content,
+                    branch: branch,
+                    sha: sha || undefined
+                };
 
-                const date = new Date(app.submittedAt).toLocaleDateString('uk-UA');
-                const time = new Date(app.submittedAt).toLocaleTimeString('uk-UA', { 
-                    hour: '2-digit', 
-                    minute: '2-digit' 
+                const method = sha ? 'PUT' : 'PUT';
+                const resp = await fetch(url, {
+                    method: method,
+                    headers: {
+                        'Authorization': `token ${token}`,
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/vnd.github+json'
+                    },
+                    body: JSON.stringify(payload)
                 });
 
-                item.innerHTML = `
-                    <div class="team-info">
-                        <div><i class="fas fa-users"></i> 
-                            <span class="player-name">${app.player1}</span> & 
-                            <span class="player-name">${app.player2}</span>
-                        </div>
-                        <div style="font-size: 0.8rem; color: rgba(255,255,255,0.6);">
-                            📅 ${date} ⏰ ${time}
-                        </div>
-                    </div>
-                    ${actionContent}
-                `;
-                container.appendChild(item);
-            });
-        }
-
-        function changeStatus(id, newStatus) {
-            const app = applications.find(a => a.id === id);
-            if (app) {
-                app.status = newStatus;
-                app.updatedAt = new Date().toISOString();
-                localStorage.setItem('applications', JSON.stringify(applications));
-                displayApplications();
-            }
-        }
-
-        function clearAllApplications() {
-            if (confirm('⚠️ Ви впевнені, що хочете видалити ВСІ заявки? Це неможливо відмінити!')) {
-                applications = [];
-                localStorage.setItem('applications', JSON.stringify(applications));
-                displayApplications();
-                alert('✅ Всі заявки видалені');
-            }
-        }
-
-        function exportApplications() {
-            if (applications.length === 0) {
-                alert('❌ Немає заявок для експорту!');
-                return;
-            }
-
-            let text = "=== ТУРНІР 2НА2 GLK - СПИСОК ЗАЯВОК ===\n\n";
-            text += `📅 Звіт від: ${new Date().toLocaleDateString('uk-UA')} ${new Date().toLocaleTimeString('uk-UA')}\n`;
-            text += `📊 Всього заявок: ${applications.length}\n\n`;
-
-            const accepted = applications.filter(a => a.status === 'accepted');
-            const rejected = applications.filter(a => a.status === 'rejected');
-            const pending = applications.filter(a => a.status === 'pending');
-
-            text += `✅ ПРИЙНЯТО (${accepted.length}):\n`;
-            accepted.forEach((app, i) => {
-                text += `${i + 1}. ${app.player1} & ${app.player2}\n`;
-            });
-
-            text += `\n❌ ВІДХИЛЕНО (${rejected.length}):\n`;
-            rejected.forEach((app, i) => {
-                text += `${i + 1}. ${app.player1} & ${app.player2}\n`;
-            });
-
-            text += `\n⏳ ОЧІКУВАННЯ (${pending.length}):\n`;
-            pending.forEach((app, i) => {
-                text += `${i + 1}. ${app.player1} & ${app.player2}\n`;
-            });
-
-            // Завантаження файлу
-            const element = document.createElement('a');
-            element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
-            element.setAttribute('download', `tournament_${new Date().toISOString().split('T')[0]}.txt`);
-            element.style.display = 'none';
-            document.body.appendChild(element);
-            element.click();
-            document.body.removeChild(element);
-
-            alert('✅ Файл завантажено!');
-        }
-
-        // ===== ДОПОМІЖНІ ФУНКЦІЇ =====
-        function showAlert(elementId, message, type) {
-            const alertDiv = document.getElementById(elementId);
-            if (alertDiv) {
-                alertDiv.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
-            }
-        }
-
-        // Закриття модалі по Escape
-        document.addEventListener('keydown', function(event) {
-            if (event.key === 'Escape') {
-                closeModal('login-modal');
-                closeModal('app-modal');
-            }
-        });
-
-        // Enter для входу в адмін
-        document.addEventListener('keydown', function(event) {
-            if (event.key === 'Enter') {
-                const loginModal = document.getElementById('login-modal');
-                const appModal = document.getElementById('app-modal');
-                
-                if (loginModal.style.display === 'flex') {
-                    loginAdmin();
+                if (resp.ok) {
+                    addLog(`✅ Конфигурация сохранена в GitHub: ${repo}/${path}`, 'success');
+                    return true;
+                } else {
+                    const errText = await resp.text();
+                    addLog(`❌ Ошибка GitHub: ${resp.status} ${errText.substring(0, 120)}`, 'error');
+                    return false;
                 }
-                if (appModal.style.display === 'flex') {
-                    submitApplication();
+            } catch (err) {
+                addLog(`❌ Исключение при сохранении в GitHub: ${err.message}`, 'error');
+                return false;
+            }
+        }
+
+        // --- Обработчики ---
+
+        // Деплой
+        deployBtn.addEventListener('click', async function() {
+            const manifest = buildDeploymentManifest();
+            addLog(`🚀 Запуск деплоя для "${manifest.serverName}" (версия ${manifest.minecraftVersion})`, 'info');
+            const result = await simulateDeploy(manifest);
+            if (result.success) {
+                // Пробуем сохранить в GitHub автоматически, если есть токен
+                if (githubToken.value.trim() && githubRepo.value.trim()) {
+                    await saveToGitHub(manifest);
                 }
             }
         });
-    </script>
+
+        // Сохранить в GitHub вручную
+        saveToGitBtn.addEventListener('click', async function() {
+            const manifest = buildDeploymentManifest();
+            await saveToGitHub(manifest);
+        });
+
+        // Превью server.properties
+        previewBtn.addEventListener('click', function() {
+            const props = generateServerProperties();
+            addLog(`📄 server.properties:\n${props}`, 'info');
+        });
+
+        // Очистка лога
+        clearLogBtn.addEventListener('click', function() {
+            logArea.innerHTML = '';
+            addLog('Лог очищен', 'info');
+        });
+
+        // Восстановление токена из sessionStorage
+        if (sessionStorage.getItem('github_token')) {
+            githubToken.value = sessionStorage.getItem('github_token');
+        }
+        // Сохраняем токен при вводе
+        githubToken.addEventListener('change', function() {
+            if (this.value) {
+                sessionStorage.setItem('github_token', this.value);
+            } else {
+                sessionStorage.removeItem('github_token');
+            }
+        });
+
+        // Стартовое сообщение
+        addLog('🟢 Оркестратор готов. Используйте "Развернуть сервер" для запуска.', 'success');
+        setStatus('offline', 'ожидание команды');
+
+        // Экспорт для консоли (отладка)
+        window.__blackbox = { buildDeploymentManifest, generateServerProperties, saveToGitHub };
+
+        console.log('[Blackbox] Minecraft Orchestrator loaded. Use __blackbox for internals.');
+    })();
+</script>
 </body>
 </html>
